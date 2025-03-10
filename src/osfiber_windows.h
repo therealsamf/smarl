@@ -19,6 +19,10 @@
 #include <memory>
 
 #define WIN32_LEAN_AND_MEAN 1
+// See https://stackoverflow.com/a/2561377
+//
+// Windows.h defines a max macro which causes compilation errors
+#define NOMINMAX 1
 #include <Windows.h>
 
 namespace marl {

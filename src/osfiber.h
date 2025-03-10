@@ -26,7 +26,7 @@
 #warning "ASAN can raise spurious failures when using mmap() allocated stacks"
 #endif
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(MARL_WIN_USE_ASM)
 #include "osfiber_windows.h"
 #elif defined(MARL_FIBERS_USE_UCONTEXT)
 #include "osfiber_ucontext.h"
