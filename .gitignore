@@ -1,7 +1,13 @@
 /.vs/
 /.vscode/
-/build/
+
+# Build directories
+/build*/
+
+# CMake artifacts
 /cmake-build-*/
+/CMakeUserPresets.json
+
 /out/
 bazel-*
 CMakeSettings.json

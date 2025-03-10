@@ -17,8 +17,8 @@ cmake_minimum_required(VERSION 3.22.1)
 include(cmake/parse_version.cmake)
 parse_version("${CMAKE_CURRENT_SOURCE_DIR}/CHANGES.md" MARL)
 
-# Marl only needs C++11, but it has sometimes been tested with C++20
-set(CMAKE_CXX_STANDARD 11)
+# marl upstream uses C++11; smarl fork uses C++20
+set(CMAKE_CXX_STANDARD 20)
 
 project(Marl
     VERSION   "${MARL_VERSION_MAJOR}.${MARL_VERSION_MINOR}.${MARL_VERSION_PATCH}"
