@@ -40,6 +40,8 @@
 #include "osfiber_asm_loongarch64.h"
 #elif defined(__EMSCRIPTEN__)
 #include "osfiber_emscripten.h"
+#elif defined(_WIN64)
+#include "osfiber_asm_w64.h"
 #else
 #error "Unsupported target"
 #endif

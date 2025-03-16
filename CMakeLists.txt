@@ -60,6 +60,7 @@ option_if_not_defined(MARL_INSTALL "Create marl install target" OFF)
 option_if_not_defined(MARL_FULL_BENCHMARK "Run benchmarks for [0 .. numLogicalCPUs] with no stepping" OFF)
 option_if_not_defined(MARL_FIBERS_USE_UCONTEXT "Use ucontext instead of assembly for fibers (ignored for platforms that do not support ucontext)" OFF)
 option_if_not_defined(MARL_DEBUG_ENABLED "Enable debug checks even in release builds" OFF)
+option_if_not_defined(MARL_WIN_USE_ASM "Enable assembly context switching for Windows" ON)
 
 ###########################################################
 # Directories
@@ -179,6 +180,13 @@ if(NOT MSVC)
         ${MARL_SRC_DIR}/osfiber_x86.c
         ${MARL_SRC_DIR}/osfiber_emscripten.cpp
     )
+elseif(MSVC AND MARL_WIN_USE_ASM)
+    enable_language(ASM_NASM)
+    list(APPEND MARL_LIST
+        ${MARL_SRC_DIR}/osfiber_asm_w64.nasm
+        ${MARL_SRC_DIR}/osfiber_w64.c
+    )
+
 endif(NOT MSVC)
 
 ###########################################################
@@ -205,8 +213,8 @@ function(marl_set_target_options target)
     if(MSVC)
         target_compile_options(${target} PRIVATE
             "-D_CRT_SECURE_NO_WARNINGS"
-            "/wd4127" # conditional expression is constant
-            "/wd4324" # structure was padded due to alignment specifier
+            $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:/wd4127>  # conditional expression is constant
+            $<$<OR:$<COMPILE_LANGUAGE:C>,$<COMPILE_LANGUAGE:CXX>>:/wd4324>  # structure was padded due to alignment specifier
         )
     endif()
 
@@ -244,6 +252,10 @@ function(marl_set_target_options target)
 
     if(MARL_DEBUG_ENABLED)
         target_compile_definitions(${target} PRIVATE "MARL_DEBUG_ENABLED=1")
+    endif()
+
+    if (MSVC AND MARL_WIN_USE_ASM)
+        target_compile_definitions(${target} PRIVATE "MARL_WIN_USE_ASM=1")
     endif()
 
     if(CMAKE_SYSTEM_PROCESSOR MATCHES "^rv.*")
